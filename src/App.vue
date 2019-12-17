@@ -10,15 +10,13 @@
         <button @click="finish(todo)">done</button>
       </li>
     </ul>
-    <template v-if="completed.length">
-      <h4>Completed</h4>
-      <ul>
-        <li v-for="todo in completed" :key="todo.id">
-          <span>{{ todo.task }}</span>
-          <button @click="unfinish(todo)">done</button>
-        </li>
-      </ul>
-    </template>
+    <h4>Completed</h4>
+    <ul>
+      <li v-for="todo in completed" :key="todo.id">
+        <span>{{ todo.task }}</span>
+        <button @click="unfinish(todo)">done</button>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -29,7 +27,7 @@ export default {
   data() {
     return {
       newTask: '',
-      todos: []
+      todos: JSON.parse(localStorage.getItem('todos')) || []
     }
   },
 
@@ -41,11 +39,6 @@ export default {
     completed() {
       return this.todos.filter(todo => todo.done)
     }
-  },
-
-  created() {
-    // Load from localStorage
-    this.todos = JSON.parse(localStorage.getItem('todos')) || []
   },
 
   methods: {
