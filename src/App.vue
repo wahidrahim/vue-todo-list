@@ -5,16 +5,20 @@
       <button type="submit">Add</button>
     </form>
     <ul>
-      <li v-for="todo in todos" :key="todo.id">
-        <strike v-if="todo.done">
-          {{ todo.task }}
-        </strike>
-        <span v-else>
-          {{ todo.task }}
-        </span>
-        <button @click="done(todo.id)">done</button>
+      <li v-for="todo in pending" :key="todo.id">
+        <span>{{ todo.task }}</span>
+        <button @click="finish(todo)">done</button>
       </li>
     </ul>
+    <template v-if="completed.length">
+      <h4>Completed</h4>
+      <ul>
+        <li v-for="todo in completed" :key="todo.id">
+          <span>{{ todo.task }}</span>
+          <button @click="unfinish(todo)">done</button>
+        </li>
+      </ul>
+    </template>
   </div>
 </template>
 
@@ -26,6 +30,16 @@ export default {
     return {
       newTask: '',
       todos: []
+    }
+  },
+
+  computed: {
+    pending() {
+      return this.todos.filter(todo => !todo.done)
+    },
+
+    completed() {
+      return this.todos.filter(todo => todo.done)
     }
   },
 
@@ -46,15 +60,15 @@ export default {
       this.saveTodos()
     },
 
-    done(id) {
-      // Find `todo` item
-      const todoIndex = this.todos.findIndex(todo => todo.id === id)
-      const todo = this.todos[todoIndex]
+    finish(todo) {
+      todo.done = true
 
-      // Toggle `done` status
-      todo.done = !todo.done
+      this.saveTodos()
+    },
 
-      this.todos.splice(todoIndex, 1, todo)
+    unfinish(todo) {
+      todo.done = false
+
       this.saveTodos()
     },
 
