@@ -6,8 +6,13 @@
     </form>
     <ul>
       <li v-for="todo in todos" :key="todo.id">
-        {{ todo.task }}
-        <button>done</button>
+        <strike v-if="todo.done">
+          {{ todo.task }}
+        </strike>
+        <span v-else>
+          {{ todo.task }}
+        </span>
+        <button @click="done(todo.id)">done</button>
       </li>
     </ul>
   </div>
@@ -24,18 +29,38 @@ export default {
     }
   },
 
+  created() {
+    // Load from localStorage
+    this.todos = JSON.parse(localStorage.getItem('todos')) || []
+  },
+
   methods: {
     addTask() {
-      /* eslint-disable no-console */
-      console.log(this.newTask)
-
       this.todos.push({
         id: this.todos.length + 1,
         task: this.newTask,
-        completed: false
+        done: false
       })
 
       this.newTask = ''
+      this.saveTodos()
+    },
+
+    done(id) {
+      // Find `todo` item
+      const todoIndex = this.todos.findIndex(todo => todo.id === id)
+      const todo = this.todos[todoIndex]
+
+      // Toggle `done` status
+      todo.done = !todo.done
+
+      this.todos.splice(todoIndex, 1, todo)
+      this.saveTodos()
+    },
+
+    saveTodos() {
+      // Save to localStorage
+      localStorage.setItem('todos', JSON.stringify(this.todos))
     }
   }
 }
