@@ -21,13 +21,15 @@
 </template>
 
 <script>
+const STORAGE_KEY = 'vue-todo-list/todos'
+
 export default {
   name: 'app',
 
   data() {
     return {
       newTask: '',
-      todos: JSON.parse(localStorage.getItem('todos')) || []
+      todos: JSON.parse(localStorage.getItem(STORAGE_KEY)) || []
     }
   },
 
@@ -67,7 +69,7 @@ export default {
 
     saveTodos() {
       // Save to localStorage
-      localStorage.setItem('todos', JSON.stringify(this.todos))
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.todos))
     }
   }
 }
